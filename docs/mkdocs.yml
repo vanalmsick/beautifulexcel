@@ -1,0 +1,52 @@
+# Navigate to this directory and then run "mkdocs serve" to see a live-view of the documentation
+# More settings: https://squidfunk.github.io/mkdocs-material/setup/
+
+site_name: BeautifulExcel
+site_description: BeautifulExcel is a python package that makes it easy and quick to save pandas dataframes in beautifully formatted excel files. BeautifulExcel is the Openpyxl for Data Scientists with a deadline.
+site_url: https://vanalmsi.github.io/beautifulexcel/
+theme:
+  name: material
+  palette:
+    # Light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: mealie
+      primary: white
+      accent: light blue
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    # Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: black
+      accent: light blue
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - search.suggest
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - toc.integrate
+    - navigation.top
+    - navigation.footer
+
+nav:
+  - Home: "home.md"
+  - Getting Started: "home.md"
+  - Suggest an idea: "https://github.com/vanalmsick/beautifulexcel/discussions/categories/ideas"
+
+
+markdown_extensions:
+  - def_list
+  - admonition
+  - attr_list
+
+plugins:
+  - search
+  - offline
+#  - render_swagger:
+#      allow_arbitrary_locations: true
+
+repo_url: https://github.com/vanalmsick/beautifulexcel
+repo_name: vanalmsick/beautifulexcel
