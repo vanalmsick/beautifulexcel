@@ -90,3 +90,14 @@ style = {
     'C:D': {**MY_CUSTOM_WARNING_STYLE, 'numberformat': '#,##0', 'font__italic'=True}
 }
 ```
+  
+<br>
+  
+## Further details in the [Documentation](https://vanalmsick.github.io/beautifulexcel/)
+[Go to **Documentation**](https://vanalmsick.github.io/beautifulexcel/)
+  
+<br>
+  
+## A feature is missing? Feel free to contribute!
+- Please submit new features as Pull Request to the "dev" branch
+- Please make sure the code is nicely formatted and has doc strings by executing `$ pre-commit install` before your git commit
