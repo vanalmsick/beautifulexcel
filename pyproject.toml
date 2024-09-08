@@ -5,3 +5,28 @@ requires = [
     "setuptools-git-versioning>=2.0,<3",
 ]
 build-backend = "setuptools.build_meta"
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[mypy]
+ignore_missing_imports = true
+exclude = ["data"]
+pretty = true
+
+[mirrors-mypy]
+ignore_missing_imports = true
+exclude = ["data"]
+pretty = true
+
+[tool.interrogate]
+ignore-module = true
+ignore-init-method = true
+ignore-init-module = true
+ignore-property-decorators = true
+ignore-magic = true
+ignore-nested-classes = true
+fail-under = 80
+verbose = 2
+exclude = ["data"]

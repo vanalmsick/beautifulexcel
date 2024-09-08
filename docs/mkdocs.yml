@@ -32,8 +32,8 @@ theme:
     - navigation.footer
 
 nav:
-  - Home: "home.md"
-  - Getting Started: "home.md"
+  - Home: "index.md"
+  - Getting Started: "index.md"
   - Suggest an idea: "https://github.com/vanalmsick/beautifulexcel/discussions/categories/ideas"
 
 
