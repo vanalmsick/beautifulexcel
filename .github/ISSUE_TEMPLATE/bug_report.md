@@ -26,7 +26,7 @@ If applicable, add screenshots to help explain your problem.
 
 **Desktop (please complete the following information):**
  - OS: [e.g. Windows]
- - Package Version [execute ````$  pip show beautifulexcel``` to see version]
+ - Package Version [execute ```$  pip show beautifulexcel``` to see version]
  - Python Version [e.g. 3.10.5]
 
 **Additional context**
