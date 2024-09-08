@@ -27,7 +27,7 @@ with ExcelWriter('workbook.xlsx', mode='r', theme='elegant_blue') as writer:
     ws1 = writer.to_excel(df, sheet_name='My Sheet', startrow=0, startcol=0, index=True,
                           style={'RoE': 'bg_light_blue', 'D:E': {'fill': 'FFEEB7'}})
 ```
-
+<br><br>
 ## How does styling work?
 
 ### Define a "theme"
