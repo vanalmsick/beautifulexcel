@@ -49,9 +49,8 @@ The **style** dictionar requires:
   - ***excel column*** 'A1' or range 'A1:C3'
   - ***excel column*** 'A' or range 'A:C'
 - as **_value_** provide how that area should be formatted. This can have these formats:
-  - quick reference ***preset name*** from the theme selected e.g. 'bg*light_blue' or list of several themes ['bg_light_blue', 'num_fmt_pct'] *(see the presets defined for ['elegant_blue' here](beautifulexcel/themes/elegant_blue.yml))\_
+  - quick reference ***preset name*** from the theme selected e.g. 'bg*light_blue' or list of several themes ['bg_light_blue', 'num_fmt_pct'] *(see the presets defined for ['elegant_blue' here](beautifulexcel/themes/elegant_blue.yml))*
   - ***dictionary*** with the individual ***styling props*** following [**openpyxl's class names** (here)](https://openpyxl.readthedocs.io/en/stable/styles.html). Examples:
-<span style="color:808080;">
     - _font\_\_name: 'Arial'_
     - _font\_\_size: 10_
     - _font\_\_bold: True_
@@ -65,7 +64,6 @@ The **style** dictionar requires:
     - ...
     - _numberformat: '#,##0'_
     - [_(see **openpyxl's class names** for more style options)_](https://openpyxl.readthedocs.io/en/stable/styles.html)
-</span>
 
 **Example:** _(showcasing the many different styling options)_
 
