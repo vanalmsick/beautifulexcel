@@ -33,7 +33,8 @@ theme:
 
 nav:
   - Home: "index.md"
-  - Getting Started: "index.md"
+  - Getting Started: "getting_started.md"
+  - More to be added soon!: "getting_started.md"
   - Suggest an idea: "https://github.com/vanalmsick/beautifulexcel/discussions/categories/ideas"
 
 
