@@ -38,3 +38,5 @@ All notable changes to this project will be documented in this file.
 - Improve documentation
 - Avoid warning about using .save() method
 - Add charts
+
+<br><br>
