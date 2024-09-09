@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-### Known bugs
+## Known bugs
 - Sometimes cell styles get overridden by the base styles
 
 ## [0.2.1] - 2024-09-09
