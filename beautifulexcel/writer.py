@@ -141,9 +141,12 @@ class ExcelWriter:
             elif style_type.lower() == "gfill" or style_type.lower() == "gradientfill":
                 cell.fill = openpyxl.styles.GradientFill(**kwargs)
             elif style_type.lower() == "border" or style_type.lower() == "borders":
-                pass
+                border_kwargs = {}
+                for border_type, border_props in kwargs.items():
+                    border_kwargs[border_type] = openpyxl.styles.Side(**border_props)
+                cell.border = openpyxl.styles.Border(**border_kwargs)
             elif style_type.lower() == "protection":
-                pass
+                cell.font = openpyxl.styles.Protection(**kwargs)
             else:
                 raise Exception(
                     f'Unknown style type "{style_type}". Available style types are: font, numberformat, align, fill, patternfill, gradientfill, borders, and protection.'
@@ -341,6 +344,20 @@ class ExcelWriter:
                         max(length, 6) * CHARACTER_FACTOR
                     )
 
+            # apply column widths
+            for col_ref, col_width in col_widths.items():
+                col_coordinates = excel_range_ref_coordinates(
+                    ref=col_ref,
+                    header=df.columns,
+                    offset_horizontal=(df.index.nlevels if index else 0) + startcol,
+                    offset_vertical=(df.columns.nlevels if header else 0) + startrow,
+                    )
+
+                if col_coordinates[0] is not None and col_coordinates[0][1] is not None and col_coordinates[1] is not None and col_coordinates[1][1] is not None:
+                    for col_idx in range(col_coordinates[0][1], col_coordinates[1][1] + 1):
+                        ws.column_dimensions[openpyxl.utils.get_column_letter(col_idx + 1)].width = col_width
+
+
         return ws
 
 
@@ -402,6 +419,7 @@ if __name__ == "__main__":
             startrow=0,
             startcol=0,
             index=True,
+            col_widths={'employees': 100}
         )
 
     # example_df.to_excel('test.xlsx', sheet_name='My Sheet', startrow=0, startcol=0, index=True)

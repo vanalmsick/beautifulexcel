@@ -20,57 +20,45 @@ with ExcelWriter('workbook.xlsx', mode='r', theme='elegant_blue') as writer:
   
 <br>
   
-## How does styling work?
+## Custom Styling:
 
-### Define a "theme"
+### Set "theme" for entire excel file
 
 In `ExcelWriter(..., theme='elegant_blue')` you cen define the base theme that will be applied to your entire Excel file.  
 You can pass either:
 
-- a ***theme name*** of the package's included themes like 'elegant_blue', or
-- pass a ***path*** to your personal ***.yml-theme-file*** _(have a look at [this file](https://github.com/vanalmsick/beautifulexcel/blob/main/beautifulexcel/themes/elegant_blue.yml) to see the syntax)_
+- a ***theme name*** like 'elegant_blue',
+- or your personal ***.yml-theme-file path*** _([syntax example here](https://github.com/vanalmsick/beautifulexcel/blob/main/beautifulexcel/themes/elegant_blue.yml))_
 
-### Add "style" kwargs for the specific dataframe export .to_excel()
+### Add "style"-ing to individual dataframe exports
 
-In `writer.to_excel(..., style={})` you can define specific styling kwargs for that specoific table.  
-The **style** dictionar requires:
+In `writer.to_excel(df, ..., style={})` you can define specific styling kwargs for that specoific table.  
+The **style dictionary** syntax is:
 
-- as **_key_** a reference for the column, row, or cell. This can have these formats:
-  - ***df column name*** like 'emplyees' or range 'inception:last_contact'
-  - ***df row number*** like 1 or range '1:5'
-  - ***excel column*** 'A1' or range 'A1:C3'
-  - ***excel column*** 'A' or range 'A:C'
-- as **_value_** provide how that area should be formatted. This can have these formats:
-  - quick reference ***preset name*** from the theme selected e.g. 'bg*light_blue' or list of several themes ['bg_light_blue', 'num_fmt_pct'] *(see the presets defined for ['elegant_blue' here](https://github.com/vanalmsick/beautifulexcel/blob/main/beautifulexcel/themes/elegant_blue.yml))*
-  - ***dictionary*** with the individual ***styling props*** following [**openpyxl's class names** (here)](https://openpyxl.readthedocs.io/en/stable/styles.html). Examples:
-    - _font\_\_name: 'Arial'_
-    - _font\_\_size: 10_
-    - _font\_\_bold: True_
-    - ...
-    - _fill: 'FFEEB7' (short for solid patternfill)_
-    - _patternfill\_\_type: 'solid'_
-    - _patternfill\_\_fgColor: 'FFEEB7'_
-    - ...
-    - _alignment\_\_horizontal: 'center'_
-    - _alignment\_\_vertical: 'center'_
-    - ...
-    - _numberformat: '#,##0'_
-    - [_(see **openpyxl's class names** for more style options)_](https://openpyxl.readthedocs.io/en/stable/styles.html)
+| dictionary key:<br>reference the column, row, or cell                                                                                                                                                                                                                                                                                                                                                       | dictionary value:<br>provide formatting specs                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Options:<br><ul><li>***df column name***<br><ul><li>single coumn 'emplyees' or</li><li>range 'inception:last_contact'</li></ul></li><li>***df row number***<br><ul><li>single row '1' or</li><li>range '1:5'</li></ul></li><li>***excel column***<ul><li>single cell 'A1' or</li><li>range 'A1:C3'</li></ul></li><li>***excel column***<ul><li>single column 'A' or</li><li>range 'A:C'</li></ul></li></ul> | Options:<br><ul><li>***preset name*** from the selected "theme" *([see presets of 'elegant_blue'](https://github.com/vanalmsick/beautifulexcel/blob/main/beautifulexcel/themes/elegant_blue.yml))*<ul><li>single preset 'bg_light_blue' or</li><li>list of presets ['bg_light_blue', 'num_fmt_pct']</li></li></ul></li><li>***custom stying kwargs*** as dictionary as per [*openpyxl's class names*](https://openpyxl.readthedocs.io/en/stable/styles.html); examples:<ul><li>_font\_\_name: 'Arial'_</li><li>_font\_\_size: 10_</li><li>_font\_\_bold: True_</li><li>fill: 'FFEEB7'</li><li>_alignment\_\_horizontal: 'center'_</li><li>_alignment\_\_vertical: 'center'_</li><li>_numberformat: '#,##0'_</li><li>...</li></ul></li></ul> |
 
-**Example:** _(showcasing the many different styling options)_
+
+**Examples:** _(showcasing the many different styling options)_
+
+```python
+style = {'emplyees': ['bg_light_blue', 'num_fmt_pct'], 'F:G': 'num_fmt_pct'}
+```
+
+```python
+style = {'C3:D10': {'font__size': 20, 'numberformat': '#,##0', 'font__italic'=True}, 'employees:customers': {'numberformat': '#,##0'}}
+```
 
 ```python
 MY_CUSTOM_WARNING_STYLE = {'font__bold': True, 'text__color': 'ff0000', 'font__size': 20}
 MY_CUSTOM_DATE_STYLE = {'numberformat': 'yyyy-mm-dd'}
 
 style = {
-    'emplyees': 'bg_light_blue',
-    'inception:last_contact': ['bg_light_blue', 'num_fmt_pct'],
-    '1': MY_CUSTOM_WARNING_STYLE,
-    '1:5': {'numberformat': '#,##0', 'font__italic'=True},
-    'A1': {'font__italic'=True},
-    'A1:C3': MY_CUSTOM_DATE_STYLE,
-    'D': {'font__size': 20},
-    'C:D': {**MY_CUSTOM_WARNING_STYLE, 'numberformat': '#,##0', 'font__italic'=True}
+  '1': MY_CUSTOM_WARNING_STYLE, 
+  '2:5': {'font__size': 20},
+  'B3:G10': ['bg_light_blue', 'num_fmt_pct'], 
+  'A1': {**MY_CUSTOM_WARNING_STYLE, **MY_CUSTOM_DATE_STYLE}
 }
 ```
+<br><br>
