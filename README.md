@@ -25,7 +25,7 @@ $ pip install beautifulexcel --upgrade
 |-----------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `df.to_excel(writer, sheet_name='My Output')`                                                                                                       | `writer.to_excel(df, sheet_name='My Output')`                                                                                                               |
 | <img src="https://github.com/vanalmsick/beautifulexcel/raw/main/docs/docs/imgs/example_pandas.png" alt="Article Reading View" style="width:100%;"/> | <img src="https://github.com/vanalmsick/beautifulexcel/raw/main/docs/docs/imgs/example_beautifulexcel.png" alt="Article Reading View" style="width:100%;"/> |
-*Quickly export with only one line of code!*
+| *<ins>Raw, unformatted</ins> data that requires lots of additional formatting.*                                                                     | *Quickly export <ins>beautifully</ins> styled table with only <ins>one line of code</ins>!*                                                                 |
   
 <br>
   

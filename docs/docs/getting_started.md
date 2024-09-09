@@ -5,6 +5,10 @@
 ```console
 $ pip install beautifulexcel
 ```
+**Update Package:** *(execute <ins>regularly</ins> to get the latest features)*
+```console
+$ pip install beautifulexcel --upgrade
+```
   
 <br>
   
