@@ -2,7 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.0.2] - 2024-09-09
+### Known bugs
+- Sometimes cell styles get overridden by the base styles
+
+## [0.2.1] - 2024-09-09
+### Fixed
+- Fix package version in Github workflow for deploying to PyPi.org
+
+## [0.2.0] - 2024-09-09
 ### Added
 - Add column_width kwarg
 - Add border and protection cell styling
@@ -13,10 +20,6 @@ All notable changes to this project will be documented in this file.
 ## [0.1.1] - 2024-09-08
 ### Fixed
 - README images on PyPi.org were not showing correctly
-
-### Known bugs
-- Github version tag does not copy over to PyPi.org package version correctly (datestamp is used as fallback)
-- Sometimes cell styles get overridden by the base styles
 
 ## [0.1.0] - 2024-09-08
 ### Added
