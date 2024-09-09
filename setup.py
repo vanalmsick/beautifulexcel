@@ -4,7 +4,7 @@ from setuptools import find_packages
 import datetime
 
 __version__ = "${VERSION}"
-if __version__ == "${VERSION}":
+if "$" in __version__:
     __version__ = datetime.datetime.now().strftime("%Y.%m.%d.%H.%M")
 print("Version:", __version__)
 
