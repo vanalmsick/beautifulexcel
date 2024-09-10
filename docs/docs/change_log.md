@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 ## Known bugs
 - Sometimes cell styles get overridden by the base styles
 
+## [0.2.2] - 2024-09-10
+### Add
+- Add themes "elegant_green", "elegant_yellow"
+
 ## [0.2.1] - 2024-09-09
 ### Fixed
 - Fix package version in Github workflow for deploying to PyPi.org
@@ -36,7 +40,6 @@ All notable changes to this project will be documented in this file.
 - Add data validation
 - Add table definition
 - Add data filtering
-- Add more style templates
 - Add more doc strings
 - Improve documentation
 - Avoid warning about using .save() method

@@ -9,56 +9,179 @@ general:
 # Presets are for quick reference formatting
 # e.g. style={'COLUMN_NAME': ['bg_light_grey', 'num_fmt_pct']}
 preset:
-  bg_light_grey:
+  bg_strong_primary:
     fill:
       patternType: 'solid'
-      fgColor: 'F2F2F2'
-  bg_light_purple:
+      fgColor: '86BC25'
+  bg_light_primary:
     fill:
       patternType: 'solid'
-      fgColor: 'E4DFEC'
-  bg_light_blue:
+      fgColor: 'E3E48D'
+  bg_strong_secondary:
     fill:
       patternType: 'solid'
-      fgColor: 'DCE6F1'
-  bg_light_green:
+      fgColor: '0097A9'
+  bg_light_secondary:
     fill:
       patternType: 'solid'
-      fgColor: 'EBF1DE'
-  bg_light_yellow:
+      fgColor: 'DDEFE8'
+  bg_strong_tertiary:
     fill:
       patternType: 'solid'
-      fgColor: 'FFEEB7'
-  bg_light_orange:
+      fgColor: '0076A8'
+  bg_light_tertiary:
     fill:
       patternType: 'solid'
-      fgColor: 'FDE9D9'
-  bg_light_red:
+      fgColor: 'A0DCFF'
+
+  bg_primary_green:
     fill:
       patternType: 'solid'
-      fgColor: 'F2DCDB'
+      fgColor: '86BC25'
+  bg_strong_yellow_green:
+    fill:
+      patternType: 'solid'
+      fgColor: 'C4D600'
+  bg_light_yellow_green:
+    fill:
+      patternType: 'solid'
+      fgColor: 'E3E48D'
+  bg_green_1:
+    fill:
+      patternType: 'solid'
+      fgColor: '43B02A'
+  bg_green_2:
+    fill:
+      patternType: 'solid'
+      fgColor: '009A44'
+  bg_green_3:
+    fill:
+      patternType: 'solid'
+      fgColor: '046A38'
+  bg_green_4:
+    fill:
+      patternType: 'solid'
+      fgColor: '2C5234'
+  bg_turquoise_1:
+    fill:
+      patternType: 'solid'
+      fgColor: 'DDEFE8'
+  bg_turquoise_2:
+    fill:
+      patternType: 'solid'
+      fgColor: '9DD4CF'
+  bg_turquoise_3:
+    fill:
+      patternType: 'solid'
+      fgColor: '6FC2B4'
+  bg_turquoise_4:
+    fill:
+      patternType: 'solid'
+      fgColor: '00ABAB'
+  bg_turquoise_5:
+    fill:
+      patternType: 'solid'
+      fgColor: '0097A9'
+  bg_turquoise_6:
+    fill:
+      patternType: 'solid'
+      fgColor: '007680'
+  bg_turquoise_7:
+    fill:
+      patternType: 'solid'
+      fgColor: '004F59'
+  bg_blue_1:
+    fill:
+      patternType: 'solid'
+      fgColor: 'A0DCFF'
+  bg_blue_2:
+    fill:
+      patternType: 'solid'
+      fgColor: '62B5E5'
+  bg_blue_3:
+    fill:
+      patternType: 'solid'
+      fgColor: '00A3E0'
+  bg_blue_4:
+    fill:
+      patternType: 'solid'
+      fgColor: '0076A8'
+  bg_blue_5:
+    fill:
+      patternType: 'solid'
+      fgColor: '005587'
+  bg_blue_6:
+    fill:
+      patternType: 'solid'
+      fgColor: '012169'
+  bg_blue_7:
+    fill:
+      patternType: 'solid'
+      fgColor: '041E42'
+  bg_grey_1:
+    fill:
+      patternType: 'solid'
+      fgColor: 'D0D0CE'
+  bg_grey_2:
+    fill:
+      patternType: 'solid'
+      fgColor: 'BBBCBC'
+  bg_grey_3:
+    fill:
+      patternType: 'solid'
+      fgColor: 'A7A8AA'
+  bg_grey_4:
+    fill:
+      patternType: 'solid'
+      fgColor: '97999B'
+  bg_grey_5:
+    fill:
+      patternType: 'solid'
+      fgColor: '75787B'
+  bg_grey_6:
+    fill:
+      patternType: 'solid'
+      fgColor: '63666A'
+  bg_grey_7:
+    fill:
+      patternType: 'solid'
+      fgColor: '53565A'
+  bg_red:
+    fill:
+      patternType: 'solid'
+      fgColor: 'DA291C'
+  bg_orange:
+    fill:
+      patternType: 'solid'
+      fgColor: 'ED8B00'
+  bg_yellow:
+    fill:
+      patternType: 'solid'
+      fgColor: 'FFCD00'
+
+
 
   border_grey_all:
     border:
       top:
-        color: 'A9A9A9'
+        color: 'BBBCBC'
         style: 'thin'
       right:
-        color: 'A9A9A9'
+        color: 'BBBCBC'
         style: 'thin'
       bottom:
-        color: 'A9A9A9'
+        color: 'BBBCBC'
         style: 'thin'
       left:
-        color: 'A9A9A9'
+        color: 'BBBCBC'
         style: 'thin'
     border_grey_horizontal:
       border:
         top:
-          color: 'A9A9A9'
+          color: 'BBBCBC'
           style: 'thin'
         bottom:
-          color: 'A9A9A9'
+          color: 'BBBCBC'
           style: 'thin'
 
   num_fmt_general:
@@ -180,14 +303,14 @@ named_style:
     font:
       name: 'Arial'
       bold: True
-      color: '00A1E2'
+      color: '86BC25'
       size: 16
   headline2:
     name: 'Headline 2'
     font:
       name: 'Arial'
       bold: True
-      color: '00A1E2'
+      color: 'C4D600'
       size: 12
 
 
@@ -200,16 +323,16 @@ table:
       vertical: 'center'
     border:
       top:
-        color: 'A9A9A9'
+        color: 'BBBCBC'
         style: 'thin'
       right:
-        color: 'A9A9A9'
+        color: 'BBBCBC'
         style: 'thin'
       bottom:
-        color: 'A9A9A9'
+        color: 'BBBCBC'
         style: 'thin'
       left:
-        color: 'A9A9A9'
+        color: 'BBBCBC'
         style: 'thin'
   # head is applied to the column headings
   head:
@@ -218,7 +341,7 @@ table:
       color: 'FFFFFF'
     fill:
       patternType: 'solid'
-      fgColor: '002060'
+      fgColor: '86BC25'
     alignment:
       horizontal: 'center'
   # index is applied to the row index at the very left
@@ -227,4 +350,4 @@ table:
       bold: True
     fill:
       patternType: 'solid'
-      fgColor: 'F0F0F0'
+      fgColor: 'D0D0CE'

@@ -9,57 +9,80 @@ general:
 # Presets are for quick reference formatting
 # e.g. style={'COLUMN_NAME': ['bg_light_grey', 'num_fmt_pct']}
 preset:
+  bg_strong_primary:
+    fill:
+      patternType: 'solid'
+      fgColor: 'FFB600'
+  bg_strong_secondary:
+    fill:
+      patternType: 'solid'
+      fgColor: 'EB8C00'
+  bg_strong_tertiary:
+    fill:
+      patternType: 'solid'
+      fgColor: 'D04A02'
+
+  bg_strong_yellow:
+    fill:
+      patternType: 'solid'
+      fgColor: 'FFB600'
+  bg_strong_tangerine:
+    fill:
+      patternType: 'solid'
+      fgColor: 'EB8C00'
+  bg_strong_orange:
+    fill:
+      patternType: 'solid'
+      fgColor: 'D04A02'
+  bg_strong_rose:
+    fill:
+      patternType: 'solid'
+      fgColor: 'DB536A'
+  bg_strong_red:
+    fill:
+      patternType: 'solid'
+      fgColor: 'E0301E'
+  bg_dark_grey:
+    fill:
+      patternType: 'solid'
+      fgColor: '2D2D2D'
+  bg_medium_grey:
+    fill:
+      patternType: 'solid'
+      fgColor: '464646'
+  bg_normal_grey:
+    fill:
+      patternType: 'solid'
+      fgColor: '7D7D7D'
   bg_light_grey:
     fill:
       patternType: 'solid'
-      fgColor: 'F2F2F2'
-  bg_light_purple:
-    fill:
-      patternType: 'solid'
-      fgColor: 'E4DFEC'
-  bg_light_blue:
-    fill:
-      patternType: 'solid'
-      fgColor: 'DCE6F1'
-  bg_light_green:
-    fill:
-      patternType: 'solid'
-      fgColor: 'EBF1DE'
-  bg_light_yellow:
-    fill:
-      patternType: 'solid'
-      fgColor: 'FFEEB7'
-  bg_light_orange:
-    fill:
-      patternType: 'solid'
-      fgColor: 'FDE9D9'
-  bg_light_red:
-    fill:
-      patternType: 'solid'
-      fgColor: 'F2DCDB'
+      fgColor: 'DEDEDE'
+
 
   border_grey_all:
     border:
       top:
-        color: 'A9A9A9'
+        color: '7D7D7D'
         style: 'thin'
       right:
-        color: 'A9A9A9'
+        color: '7D7D7D'
         style: 'thin'
       bottom:
-        color: 'A9A9A9'
+        color: '7D7D7D'
         style: 'thin'
       left:
-        color: 'A9A9A9'
+        color: '7D7D7D'
         style: 'thin'
     border_grey_horizontal:
       border:
         top:
-          color: 'A9A9A9'
+          color: '7D7D7D'
           style: 'thin'
         bottom:
-          color: 'A9A9A9'
+          color: '7D7D7D'
           style: 'thin'
+
 
   num_fmt_general:
     numberformat: '#,##0;[Red]-#,##0;"-"'
@@ -171,7 +194,7 @@ named_style:
   title:
     name: 'Title'
     font:
-      name: 'Arial'
+      name: 'Georgia'
       bold: True
       color: '000000'
       size: 20
@@ -180,14 +203,14 @@ named_style:
     font:
       name: 'Arial'
       bold: True
-      color: '00A1E2'
+      color: 'FFB600'
       size: 16
   headline2:
     name: 'Headline 2'
     font:
       name: 'Arial'
       bold: True
-      color: '00A1E2'
+      color: 'EB8C00'
       size: 12
 
 
@@ -200,16 +223,16 @@ table:
       vertical: 'center'
     border:
       top:
-        color: 'A9A9A9'
+        color: '7D7D7D'
         style: 'thin'
       right:
-        color: 'A9A9A9'
+        color: '7D7D7D'
         style: 'thin'
       bottom:
-        color: 'A9A9A9'
+        color: '7D7D7D'
         style: 'thin'
       left:
-        color: 'A9A9A9'
+        color: '7D7D7D'
         style: 'thin'
   # head is applied to the column headings
   head:
@@ -218,7 +241,7 @@ table:
       color: 'FFFFFF'
     fill:
       patternType: 'solid'
-      fgColor: '002060'
+      fgColor: 'FFB600'
     alignment:
       horizontal: 'center'
   # index is applied to the row index at the very left
@@ -227,4 +250,4 @@ table:
       bold: True
     fill:
       patternType: 'solid'
-      fgColor: 'F0F0F0'
+      fgColor: 'DEDEDE'
