@@ -8,7 +8,7 @@ import yaml
 import datetime
 import warnings
 
-from utils import flatten_dict, deepen_dict, excel_range_ref_coordinates, get_custom_styles
+from beautifulexcel.utils import flatten_dict, deepen_dict, excel_range_ref_coordinates, get_custom_styles
 
 
 class ExcelWriter:
