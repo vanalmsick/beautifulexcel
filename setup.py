@@ -28,6 +28,6 @@ setup(
     ],
     python_requires=">=3.7",
     packages=find_packages(),
-    package_data={'beautifulexcel': ['*.yml', 'VERSION']}
+    package_data={'beautifulexcel': ['themes/*.yml', 'VERSION']},
     include_package_data=True,
 )
