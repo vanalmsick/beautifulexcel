@@ -28,7 +28,7 @@ with ExcelWriter('workbook.xlsx', mode='r', theme='elegant_blue') as writer:
 
 ### Set "theme" for entire excel file
 
-In `ExcelWriter(..., theme='elegant_blue')` you cen define the base theme that will be applied to your entire Excel file.  
+In `ExcelWriter(..., theme='elegant_blue')` you can define the base theme that will be applied to your entire Excel file.  
 You can pass either:
 
 - a ***theme name*** like 'elegant_blue',
@@ -36,7 +36,7 @@ You can pass either:
 
 ### Add "style"-ing to individual dataframe exports
 
-In `writer.to_excel(df, ..., style={})` you can define specific styling kwargs for that specoific table.  
+In `writer.to_excel(df, ..., style={})` you can define specific styling kwargs for that specific table.  
 The **style dictionary** syntax is:
 
 | dictionary key:<br>reference the column, row, or cell                                                                                                                                                                                                                                                                                                                                                       | dictionary value:<br>provide formatting specs                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
