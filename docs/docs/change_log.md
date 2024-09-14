@@ -6,7 +6,13 @@ All notable changes to this project will be documented in this file.
 
 - None
 
-## [0.2.8] - 2024-09-14
+## [0.3.0]
+
+### Added
+
+- Added data validation .add_data_validation()
+
+## [0.2.8-0.2.9] - 2024-09-14
 
 ### Fixed
 
@@ -64,7 +70,6 @@ All notable changes to this project will be documented in this file.
 - Add named styles styling
 - Add conditional formatting
 - Implement df.styler.to_excel()
-- Add data validation
 - Add table definition
 - Add data filtering
 - Add more doc strings

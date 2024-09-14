@@ -15,6 +15,7 @@ from beautifulexcel.utils import (
     excel_range_ref_coordinates,
     get_custom_styles,
     dict_extend_with_dict,
+    excel_column_name,
 )
 
 
@@ -104,6 +105,40 @@ class Sheet:
                 col = openpyxl.utils.get_column_letter(col + 1)
             self.ws.column_dimensions[col].width = width
 
+    def add_data_validation(self, ref, type, props=None, **kwargs):
+        """
+        Add data validation to worksheet
+
+        Args:
+            ref (str or list of str): Cell range reference e.g. "A1:C5" or ["A1:C5", "A21:Z55"]
+            type (str): Data valiation type. Options: list, whole, decimal, date, time, textLength, formula
+            operator (str optional): Validation mathematical operator: "between", "greaterThan", "greaterThanOrEqual", "equal", "notEqual", "lessThan", "lessThanOrEqual"
+            props (any optional): Depending on vaildation type the properties. list = ["Option 1", "Option 2"], numeric = single number OR upper & lower boundary (1, 100), formla
+
+        Example:
+            >>> ws1.add_data_validation(ref="A1:C5", type="whole")
+            >>> ws1.add_data_validation(ref="A1:C5", type="decimal", operator="greaterThan", props=0)
+            >>> ws1.add_data_validation(ref="A1:C5", type="textLength", props=10)
+            >>> ws1.add_data_validation(ref="A1:C5", type="list", props=["Yes", "No"])
+            >>> ws1.add_data_validation(ref="A1:C5", type="whole", operator="between", props=[0, 100])
+        """
+        if isinstance(props, list) or isinstance(props, tuple):
+            if type.lower() == 'list':
+                formula1 = '"' + ','.join(props) + '"'
+                formula2 = None
+            else:
+                formula1, formula2 = props
+        else:
+            formula1 = props
+            formula2 = None
+        dv = openpyxl.worksheet.datavalidation.DataValidation(type=type, formula1=formula1, formula2=formula2, **kwargs)
+        self.ws.add_data_validation(dv)
+
+        if isinstance(ref, str):
+            ref = [ref]
+        for i_ref in ref:
+            dv.add(i_ref)
+
 
 class DataframeSheet(Sheet):
     """DataFrame Excel Sheet class containing all logic specific to dataframe exports"""
@@ -126,13 +161,21 @@ class DataframeSheet(Sheet):
         super().__init__(excelwriter, sheet_name, use_theme_style, col_widths)
         self.startrow = startrow
         self.startcol = startcol
-        self.has_index = index
         self.df = df
         self.index = df.index
-        self.has_header = header
         self.header = df.columns
+        self.has_index = index
+        self.has_header = header
+        self.index_depth = index_depth = self.index.nlevels if self.has_index else 0
+        self.header_depth = header_depth = self.header.nlevels if self.has_header else 0
+        self.table_width = table_width = len(self.header)
+        self.table_height = table_height = len(self.index)
         self.col_autofit = col_autofit
         self.auto_number_formatting = auto_number_formatting
+        self.shape = ((startrow, startcol), (startrow + header_depth + table_height, startcol + index_depth + table_width))
+        self.shape_header = ((startrow, startcol), (startrow + header_depth, startcol + index_depth + table_width))
+        self.shape_index = ((startrow + header_depth, startcol), (startrow + header_depth + table_height, startcol + index_depth))
+        self.shape_body = ((startrow + header_depth, startcol + index_depth), (startrow + header_depth + table_height, startcol + index_depth + table_width))
 
         # export df to excel
         self.df.to_excel(
@@ -233,17 +276,7 @@ class DataframeSheet(Sheet):
 
     def _apply_table_style(self):
         """This internal function applies the table cell styling for the to_excel() function"""
-        startrow = self.startrow
-        startcol = self.startcol
-        has_index = self.has_index
-        index = self.index
-        has_header = self.has_header
-        header = self.header
         ref_warnings = self.excelwriter.ref_warnings
-        self.index_depth = index_depth = index.nlevels if has_index else 0
-        self.header = header_depth = header.nlevels if has_header else 0
-        self.table_width = table_width = len(header)
-        self.table_height = table_height = len(index)
 
         style_base = self.style_base.copy()
         style_custom = self.style_custom.copy()
@@ -259,9 +292,9 @@ class DataframeSheet(Sheet):
             for ref, ref_style in iter_dict.items():
                 style_coordinates = excel_range_ref_coordinates(
                     ref=ref,
-                    header=header,
-                    offset_horizontal=index_depth + startcol,
-                    offset_vertical=header_depth + startrow,
+                    header=self.header,
+                    offset_horizontal=self.index_depth + self.startcol,
+                    offset_vertical=self.header_depth + self.startrow,
                 )
 
                 # check if invalid cell ref
@@ -277,9 +310,10 @@ class DataframeSheet(Sheet):
                     )
 
         # Apply table heading styling
-        if has_header:
-            for row_num in range(startrow, startrow + header_depth):
-                for col_num in range(startcol, startcol + index_depth + table_width):
+        if self.has_header:
+            ((start_row, start_col), (end_row, end_col)) = self.shape_header
+            for row_num in range(start_row, end_row):
+                for col_num in range(start_col, end_col):
                     cell_style = get_custom_styles(
                         cell_row_num=row_num,
                         cell_col_num=col_num,
@@ -290,9 +324,10 @@ class DataframeSheet(Sheet):
                     self.apply_cell_style(row_num=row_num, col_num=col_num, style={**style_special_head, **cell_style})
 
         # Apply table index styling
-        if has_index:
-            for row_num in range(startrow + header_depth, startrow + header_depth + table_height):
-                for col_num in range(startcol, startcol + index_depth):
+        if self.has_index:
+            ((start_row, start_col), (end_row, end_col)) = self.shape_index
+            for row_num in range(start_row, end_row):
+                for col_num in range(start_col, end_col):
                     cell_style = get_custom_styles(
                         cell_row_num=row_num,
                         cell_col_num=col_num,
@@ -303,8 +338,9 @@ class DataframeSheet(Sheet):
                     self.apply_cell_style(row_num=row_num, col_num=col_num, style={**style_special_index, **cell_style})
 
         # Apply table body styling
-        for row_num in range(startrow + header_depth, startrow + header_depth + table_height):
-            for col_num in range(startcol + index_depth, startcol + index_depth + table_width):
+        ((start_row, start_col), (end_row, end_col)) = self.shape_body
+        for row_num in range(start_row, end_row):
+            for col_num in range(start_col, end_col):
                 cell_style = get_custom_styles(
                     cell_row_num=row_num,
                     cell_col_num=col_num,
@@ -313,6 +349,36 @@ class DataframeSheet(Sheet):
                 )
                 # print('Body', row_num, col_num)
                 self.apply_cell_style(row_num=row_num, col_num=col_num, style={**style_special_body, **cell_style})
+
+    def _get_excel_range_from_df_columns(self, ref, include_index=False, include_header=False):
+        col_num = self.header.get_loc(ref)
+        excel_col_num = col_num + self.index_depth + self.startcol
+        excel_col_letter = excel_column_name(excel_col_num + 1)
+        return f"{excel_col_letter}{self.shape_body[0][0] + 1}:{excel_col_letter}{self.shape_body[1][0] + 1}"
+
+
+    def add_data_validation(self, ref, **kwargs):
+        """
+        Add data validation to worksheet
+
+        Args:
+            ref (str or list of str): Cell range reference e.g. "A1:C5" or ["A1:C5", "A21:Z55"]
+            type (str): Data valiation type. Options: list, whole, decimal, date, time, textLength, formula
+            operator (str optional): Validation mathematical operator: "between", "greaterThan", "greaterThanOrEqual", "equal", "notEqual", "lessThan", "lessThanOrEqual"
+            props (any optional): Depending on vaildation type the properties. list = ["Option 1", "Option 2"], numeric = single number OR upper & lower boundary (1, 100), formla
+
+        Example:
+            >>> ws1.add_data_validation(ref="employees", type="whole")
+            >>> ws1.add_data_validation(ref="A1:C5", type="whole")
+            >>> ws1.add_data_validation(ref="RoE", type="decimal", operator="greaterThan", props=0)
+            >>> ws1.add_data_validation(ref="A1:C5", type="textLength", props=10)
+            >>> ws1.add_data_validation(ref="A1:C5", type="list", props=["Yes", "No"])
+            >>> ws1.add_data_validation(ref="A1:C5", type="whole", operator="between", props=[0, 100])
+        """
+        if isinstance(ref, str):
+            ref = [ref]
+        ref = [self._get_excel_range_from_df_columns(i) if i in self.header else i for i in ref]
+        super().add_data_validation(ref, **kwargs)
 
 
 class ExcelWriter:
@@ -527,5 +593,6 @@ if __name__ == "__main__":
             index=True,
             col_widths={"employees": 100},
         )
+        #ws1.add_data_validation(ref="revenue", type="list", props=["Y", "N"])
 
     # example_df.to_excel('test.xlsx', sheet_name='My Sheet', startrow=0, startcol=0, index=True)
