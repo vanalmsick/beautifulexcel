@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 import os
+import warnings
 from typing import Literal, Any
+import datetime
 import numpy as np
 import pandas as pd
 import openpyxl
 import yaml
-import datetime
-import warnings
+
 
 from beautifulexcel.utils import (
     flatten_dict,
@@ -20,21 +21,21 @@ from beautifulexcel.utils import (
 class Sheet:
     """Base Excel Sheet Class which contains all the methods that can be applied to a sheet"""
 
-    def __init__(self, ExcelWriter, sheet_name, use_theme_style, col_widths):
-        self.ExcelWriter = ExcelWriter
-        self.writer = self.ExcelWriter.writer
+    def __init__(self, excelwriter, sheet_name, use_theme_style, col_widths):
+        self.excelwriter = excelwriter
+        self.writer = self.excelwriter.writer
         self.sheet_name = sheet_name
         self.use_theme_style = use_theme_style
         self.col_widths = col_widths
 
         if use_theme_style:
-            self.style_base = self._extend_style_args(self.ExcelWriter.theme.get("general", {}))
+            self.style_base = self._extend_style_args(self.excelwriter.theme.get("general", {}))
         else:
             self.style_base = {}
 
     def _extend_style_args(self, style_args):
         """Uses the theme presets and replaces them with the actual style kwargs"""
-        self.preset_styles = preset_styles = self.ExcelWriter.theme.get("preset", {})
+        self.preset_styles = preset_styles = self.excelwriter.theme.get("preset", {})
 
         # already extended dict style
         if type(style_args) is dict:
@@ -109,7 +110,7 @@ class DataframeSheet(Sheet):
 
     def __init__(
         self,
-        ExcelWriter,
+        excelwriter,
         df,
         sheet_name,
         startrow=0,
@@ -122,7 +123,7 @@ class DataframeSheet(Sheet):
         col_autofit=True,
         auto_number_formatting=True,
     ):
-        super().__init__(writer, sheet_name, use_theme_style, col_widths)
+        super().__init__(excelwriter, sheet_name, use_theme_style, col_widths)
         self.startrow = startrow
         self.startcol = startcol
         self.has_index = index
@@ -142,8 +143,8 @@ class DataframeSheet(Sheet):
         # generate final styling that will apply to the dataframe export
         if use_theme_style:
             # add table style from style template
-            if "table" in self.ExcelWriter.theme:
-                for level, level_styling in self.ExcelWriter.theme["table"].items():
+            if "table" in self.excelwriter.theme:
+                for level, level_styling in self.excelwriter.theme["table"].items():
                     dict_extend_with_dict(
                         dict_obj=self.style_base, key=level, value_dict=self._extend_style_args(level_styling)
                     )
@@ -238,7 +239,7 @@ class DataframeSheet(Sheet):
         index = self.index
         has_header = self.has_header
         header = self.header
-        ref_warnings = self.ExcelWriter.ref_warnings
+        ref_warnings = self.excelwriter.ref_warnings
         self.index_depth = index_depth = index.nlevels if has_index else 0
         self.header = header_depth = header.nlevels if has_header else 0
         self.table_width = table_width = len(header)
@@ -449,7 +450,7 @@ class ExcelWriter:
         auto_number_formatting=True,
     ):
         df_sheet = DataframeSheet(
-            ExcelWriter=self,
+            excelwriter=self,
             df=df,
             sheet_name=sheet_name,
             startrow=startrow,
