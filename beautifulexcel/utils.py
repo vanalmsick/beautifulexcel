@@ -3,6 +3,14 @@ import re
 import pandas as pd
 
 
+def dict_extend_with_dict(dict_obj, key, value_dict):
+    if key not in dict_obj:
+        dict_obj[key] = {**value_dict}
+    else:
+        dict_obj[key] = {**dict_obj[key], **value_dict}
+    return dict_obj
+
+
 def flatten_dict(dict_obj: dict, sep="__"):
     """Flatten a multi-level dictionary e.g. {'a1': {'b': 1}, 'a2': 3} -> {'a1__b': 1, 'a2': 3}"""
     df = pd.json_normalize(dict_obj, sep=sep)
