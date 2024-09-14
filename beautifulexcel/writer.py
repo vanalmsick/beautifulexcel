@@ -140,6 +140,14 @@ class Sheet:
             dv.add(i_ref)
 
 
+    def merge_cells(self, ref):
+        """Merge several cells"""
+        if isinstance(ref, str):
+            ref = [ref]
+        for i_ref in ref:
+            self.ws.merge_cells(i_ref)
+
+
 class DataframeSheet(Sheet):
     """DataFrame Excel Sheet class containing all logic specific to dataframe exports"""
 
@@ -594,5 +602,6 @@ if __name__ == "__main__":
             col_widths={"employees": 100},
         )
         #ws1.add_data_validation(ref="revenue", type="list", props=["Y", "N"])
+        #ws1.merge_cells("A1:B2")
 
     # example_df.to_excel('test.xlsx', sheet_name='My Sheet', startrow=0, startcol=0, index=True)

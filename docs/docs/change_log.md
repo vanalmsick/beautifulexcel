@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Added data validation .add_data_validation()
+- Add .merge_cells()
 
 ## [0.2.8-0.2.9] - 2024-09-14
 
@@ -64,7 +65,6 @@ All notable changes to this project will be documented in this file.
 ## Still ToDo
 
 - Add manual cell writer
-- Add cell merger
 - Add column grouper/folder
 - Add easy option to add formulas
 - Add named styles styling
