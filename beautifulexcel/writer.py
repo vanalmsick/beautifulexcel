@@ -12,21 +12,10 @@ import yaml
 from beautifulexcel.utils import (
     flatten_dict,
     deepen_dict,
-    excel_range_ref_coordinates,
     get_custom_styles,
     dict_extend_with_dict,
-    excel_column_name,
+    is_valid_excel_cell,
 )
-
-
-def dataframesheet_col_ref_translator(cls, ref):
-    """This is a decorator to translate column refeneces like 'eyployees' to excel cell references like 'A1:A10'"""
-    ref_coordinates = excel_range_ref_coordinates(ref=ref, header=cls.header, offset_horizontal=cls.shape_body[0][0], offset_vertical=cls.shape_body[0][1])
-    excel_col_letter_start = excel_column_name(ref_coordinates[0][1] + 1)
-    excel_col_letter_end = excel_column_name(ref_coordinates[1][1] + 1)
-    excel_row_num_start = cls.shape_body[0][0] + 1 if ref_coordinates[0][0] is None else ref_coordinates[0][0] + 1
-    excel_row_num_end = cls.shape_body[1][0] + 1 if ref_coordinates[1][0] is None else ref_coordinates[1][0] + 1
-    return f"{excel_col_letter_start}{excel_row_num_start}:{excel_col_letter_end}{excel_row_num_end}"
 
 
 class Sheet:
@@ -77,7 +66,7 @@ class Sheet:
     def apply_cell_style(self, row_num, col_num, style):
         ws = self.ws
         style_deep = deepen_dict(style)
-        cell = ws.cell(row=row_num + 1, column=col_num + 1)
+        cell = ws.cell(row=row_num, column=col_num)
 
         for style_type, kwargs in style_deep.items():
             if style_type.lower() == "font":
@@ -147,7 +136,10 @@ class Sheet:
         if isinstance(ref, str):
             ref = [ref]
         for i_ref in ref:
-            dv.add(i_ref)
+            if self.__class__.__name__ == 'DataframeSheet':
+                i_ref = self.util_range_ref_from_coordinates(self.util_get_range_coordinates(i_ref, enrich_dimensions=True))
+            if i_ref is not None:
+                dv.add(i_ref)
 
 
     def merge_cells(self, ref):
@@ -156,8 +148,9 @@ class Sheet:
             ref = [ref]
         for i_ref in ref:
             if self.__class__.__name__ == 'DataframeSheet':
-                i_ref = dataframesheet_col_ref_translator(self, i_ref)
-            self.ws.merge_cells(i_ref)
+                i_ref = self.util_range_ref_from_coordinates(self.util_get_range_coordinates(i_ref, enrich_dimensions=True))
+            if i_ref is not None:
+                self.ws.merge_cells(i_ref)
 
 
     def __group_cols_rows(self, ref, axis, hidden=False, outline_level=1):
@@ -166,16 +159,17 @@ class Sheet:
             ref = [ref]
             if isinstance(hidden, bool):
                 hidden = [hidden] * len(ref)
-            if isinstance(hidden, int):
+            if isinstance(outline_level, int):
                 outline_level = [outline_level] * len(ref)
         for i_ref, i_hidden, i_level in zip(ref, hidden, outline_level):
-            #if self.__class__.__name__ == 'DataframeSheet':
-            #    i_ref = dataframesheet_col_ref_translator(self, i_ref)
-            i_ref_start, i_ref_end = i_ref.split(':')
-            if axis == 'columns':
-                self.ws.column_dimensions.group(i_ref_start, i_ref_end, hidden=i_hidden, outline_level=i_level)
-            elif axis == 'rows':
-                self.ws.row_dimensions.group(i_ref_start, i_ref_end, hidden=i_hidden, outline_level=i_level)
+            if self.__class__.__name__ == 'DataframeSheet':
+                i_ref = self.util_range_ref_from_coordinates(self.util_get_range_coordinates(i_ref))
+            if i_ref is not None:
+                i_ref_start, i_ref_end = i_ref.split(':')
+                if axis == 'columns':
+                    self.ws.column_dimensions.group(i_ref_start, i_ref_end, hidden=i_hidden, outline_level=i_level)
+                elif axis == 'rows':
+                    self.ws.row_dimensions.group(i_ref_start, i_ref_end, hidden=i_hidden, outline_level=i_level)
 
 
     def group_columns(self, *args, **kwargs):
@@ -185,6 +179,118 @@ class Sheet:
     def group_rows(self, *args, **kwargs):
         """Group several rows"""
         return self.__group_cols_rows(*args, **kwargs, axis='rows')
+
+    def util_get_cell_coordinates(self, ref):
+        """
+        Get cell coordinates
+
+        Examples:
+            >>> ws.util_get_cell_coordinates(ref='A2')
+            (2, 1)
+            >>> ws.util_get_cell_coordinates(ref='A')
+            (None, 1)
+            >>> ws.util_get_cell_coordinates(ref='1')
+            (1, None)
+            >>> ws.util_get_cell_coordinates(ref='-1')
+            (-1, None)
+        """
+        ref = str(ref)
+
+        # check if row number - i.e. all numbers
+        if ref.isdigit() or (len(ref) >= 2 and ref[0] == '-' and ref[1:].isdigit()):
+            return (int(ref), None)
+
+        # check if reasonable column letter - i.e. all letters and resonable number
+        if len(ref) < 4 and ref.isalpha() and openpyxl.utils.cell.column_index_from_string(ref) < 1_048_577:
+            return (None, openpyxl.utils.cell.column_index_from_string(ref))
+
+        # check if valid excel cell ref
+        valid_excel_cell, col_letter, row_num = is_valid_excel_cell(ref)
+        if valid_excel_cell:
+            return openpyxl.utils.cell.coordinate_to_tuple(ref)
+
+        # raise wainring if invalid
+        if self.excelwriter.ref_warnings:
+            warnings.warn(f'Ref "{ref}" could not be found. (You can ignore these warnings by adding ref_warnings=False to ExcelWriter())')
+
+        # return None
+        return None
+
+
+    def util_get_range_coordinates(self, ref, enrich_dimensions=False):
+        """
+        Get cell range coordinates
+
+        Examples:
+            >>> ws.util_get_range_coordinates(ref='A2:C4')
+            ((2, 1), (4, 3))
+            >>> ws.util_get_range_coordinates(ref='A:C')
+            ((None, 1), (None, 3))
+            >>> ws.util_get_range_coordinates(ref='1:3')
+            ((1, None), (3, None))
+            >>> ws.util_get_range_coordinates(ref='4:-1')
+            ((4, None), (-1, None))
+
+        """
+        if ':' in ref:
+            ref_start, ref_end = ref.split(':')
+        else:
+            ref_start = ref_end = ref
+
+        coordinates_start = self.util_get_cell_coordinates(ref_start)
+        coordinates_end = self.util_get_cell_coordinates(ref_end)
+
+        # if any invaild ref
+        if coordinates_start is None or coordinates_end is None:
+            return None
+
+        row_start, col_start = coordinates_start
+        row_end, col_end = coordinates_end
+        if self.__class__.__name__ == 'DataframeSheet':
+            ((sheet_min_row, sheet_min_column), (sheet_max_row, sheet_max_column)) = self.shape_body
+        else:
+            sheet_min_row = self.ws.min_row
+            sheet_max_row = self.ws.max_row
+            sheet_min_column = self.ws.min_column
+            sheet_max_column = self.ws.max_column
+
+        # enrich_dimensions if any ref is None/undefined
+        if enrich_dimensions:
+            if row_start is None:
+                row_start = sheet_min_row
+            if row_end is None:
+                row_end = sheet_max_row - 1
+            if col_start is None:
+                col_start = sheet_min_column
+            if col_end is None:
+                col_end = sheet_max_column - 1
+
+        # make sure lower bound at start always - so range() works
+        if row_start is not None and row_end is not None and row_end < row_start:
+            row_end, row_start = row_start, row_end
+        if col_start is not None and col_end is not None and col_end < col_start:
+            col_end, col_start = col_start, col_end
+
+        return ((row_start, col_start), (row_end, col_end))
+
+    def util_cell_ref_from_coordinates(self, ref):
+        """Tranform (row_num, col_num) into excel ref 'A1' """
+        if ref is None:
+            return None
+
+        col_letter = '' if ref[1] is None else openpyxl.utils.cell.get_column_letter(ref[1])
+        row_number = '' if ref[0] is None else ref[0]
+        return f'{col_letter}{row_number}'
+
+    def util_range_ref_from_coordinates(self, ref):
+        """Tranform ((start_row_num, start_col_num), (end_row_num, end_col_num)) into excel ref 'A1:C5'"""
+        if ref is None:
+            return None
+
+        start_ref, end_ref = ref
+        start_ref = self.util_cell_ref_from_coordinates(start_ref)
+        end_ref = self.util_cell_ref_from_coordinates(end_ref)
+        return f'{start_ref}:{end_ref}'
 
 
 class DataframeSheet(Sheet):
@@ -219,10 +325,10 @@ class DataframeSheet(Sheet):
         self.table_height = table_height = len(self.index)
         self.col_autofit = col_autofit
         self.auto_number_formatting = auto_number_formatting
-        self.shape = ((startrow, startcol), (startrow + header_depth + table_height, startcol + index_depth + table_width))
-        self.shape_header = ((startrow, startcol), (startrow + header_depth, startcol + index_depth + table_width))
-        self.shape_index = ((startrow + header_depth, startcol), (startrow + header_depth + table_height, startcol + index_depth))
-        self.shape_body = ((startrow + header_depth, startcol + index_depth), (startrow + header_depth + table_height, startcol + index_depth + table_width))
+        self.shape = ((startrow + 1, startcol + 1), (startrow + header_depth + table_height + 1, startcol + index_depth + table_width + 1))
+        self.shape_header = ((startrow + 1, startcol + 1), (startrow + header_depth + 1, startcol + index_depth + table_width + 1))
+        self.shape_index = ((startrow + header_depth + 1, startcol + 1), (startrow + header_depth + table_height + 1, startcol + index_depth + 1))
+        self.shape_body = ((startrow + header_depth + 1, startcol + index_depth + 1), (startrow + header_depth + table_height + 1, startcol + index_depth + table_width + 1))
 
         # export df to excel
         self.df.to_excel(
@@ -275,12 +381,7 @@ class DataframeSheet(Sheet):
         # apply column widths
         _col_widths = {}
         for col_ref, col_width in col_widths.items():
-            col_coordinates = excel_range_ref_coordinates(
-                ref=col_ref,
-                header=df.columns,
-                offset_horizontal=(df.index.nlevels if index else 0) + startcol,
-                offset_vertical=(df.columns.nlevels if header else 0) + startrow,
-            )
+            col_coordinates = self.util_get_range_coordinates(col_ref)
 
             if (
                 col_coordinates[0] is not None
@@ -337,12 +438,7 @@ class DataframeSheet(Sheet):
         style_non_special = {}
         for iter_dict in [style_base, style_custom]:
             for ref, ref_style in iter_dict.items():
-                style_coordinates = excel_range_ref_coordinates(
-                    ref=ref,
-                    header=self.header,
-                    offset_horizontal=self.index_depth + self.startcol,
-                    offset_vertical=self.header_depth + self.startrow,
-                )
+                style_coordinates = self.util_get_range_coordinates(ref)
 
                 # check if invalid cell ref
                 if ref_warnings and (style_coordinates[0] is None or style_coordinates[1] is None):
@@ -397,12 +493,6 @@ class DataframeSheet(Sheet):
                 # print('Body', row_num, col_num)
                 self.apply_cell_style(row_num=row_num, col_num=col_num, style={**style_special_body, **cell_style})
 
-    def _get_excel_range_from_df_columns(self, ref, include_index=False, include_header=False):
-        col_num = self.header.get_loc(ref)
-        excel_col_num = col_num + self.index_depth + self.startcol
-        excel_col_letter = excel_column_name(excel_col_num + 1)
-        return f"{excel_col_letter}{self.shape_body[0][0] + 1}:{excel_col_letter}{self.shape_body[1][0] + 1}"
-
 
     def add_data_validation(self, ref, **kwargs):
         """
@@ -424,8 +514,31 @@ class DataframeSheet(Sheet):
         """
         if isinstance(ref, str):
             ref = [ref]
-        ref = [self._get_excel_range_from_df_columns(i) if i in self.header else i for i in ref]
+        ref = [self.util_range_ref_from_coordinates(self.util_get_range_coordinates(i, enrich_dimensions=True)) if i in self.header else i for i in ref]
         super().add_data_validation(ref, **kwargs)
+
+
+    def util_get_cell_coordinates(self, ref):
+        """
+        Get cell coordinates
+
+        Examples:
+            >>> ws.util_get_cell_coordinates(ref='employees')
+            (N, 3)
+            >>> ws.util_get_cell_coordinates(ref='A2')
+            (2, 1)
+            >>> ws.util_get_cell_coordinates(ref='A')
+            (None, 1)
+            >>> ws.util_get_cell_coordinates(ref='1')
+            (1, None)
+            >>> ws.util_get_cell_coordinates(ref='-1')
+            (-1, None)
+        """
+        ref = str(ref)
+        if not ref.isdigit() or not (len(ref) >= 2 and ref[0] == '-' and ref[1:].isdigit()):
+            if ref in self.header:
+                ref = openpyxl.utils.cell.get_column_letter((self.header.get_loc(ref) + 1) + self.index_depth + self.startcol)
+        return super().util_get_cell_coordinates(ref)
 
 
 class ExcelWriter:
@@ -640,7 +753,8 @@ if __name__ == "__main__":
             index=True,
             col_widths={"employees": 100},
         )
-        #ws1.add_data_validation(ref="revenue", type="list", props=["Y", "N"])
-        ws1.group_columns("A:B")
+        ws1.add_data_validation(ref="employees", type="list", props=["Y", "N"])
+        ws1.group_columns("revenue:B")
+        ws1.merge_cells("B8:C9")
 
     # example_df.to_excel('test.xlsx', sheet_name='My Sheet', startrow=0, startcol=0, index=True)

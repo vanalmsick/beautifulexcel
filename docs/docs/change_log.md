@@ -6,13 +6,18 @@ All notable changes to this project will be documented in this file.
 
 - None
 
-## [0.3.0]
+## [0.3.0] - 2024-09-15
 
 ### Added
 
 - Added data validation .add_data_validation()
-- Add .merge_cells()
-- Add .group_columns() and .group_rows()
+- Added .merge_cells()
+- Added .group_columns() and .group_rows()
+- Added documentation for beautifulexcel.ExcelWriter()
+
+### Fixed
+
+- Refactored cell reference translation
 
 ## [0.2.8-0.2.9] - 2024-09-14
 

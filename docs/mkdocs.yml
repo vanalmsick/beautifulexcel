@@ -34,6 +34,7 @@ theme:
 nav:
   - Home: "index.md"
   - Getting Started: "getting_started.md"
+  - beautifulexcel.ExcelWriter(): "ExcelWriter.md"
   - Changelog & ToDos: "change_log.md"
   - Suggest an idea: "https://github.com/vanalmsick/beautifulexcel/discussions/categories/ideas"
 
