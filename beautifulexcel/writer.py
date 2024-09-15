@@ -19,6 +19,16 @@ from beautifulexcel.utils import (
 )
 
 
+def dataframesheet_col_ref_translator(cls, ref):
+    """This is a decorator to translate column refeneces like 'eyployees' to excel cell references like 'A1:A10'"""
+    ref_coordinates = excel_range_ref_coordinates(ref=ref, header=cls.header, offset_horizontal=cls.shape_body[0][0], offset_vertical=cls.shape_body[0][1])
+    excel_col_letter_start = excel_column_name(ref_coordinates[0][1] + 1)
+    excel_col_letter_end = excel_column_name(ref_coordinates[1][1] + 1)
+    excel_row_num_start = cls.shape_body[0][0] + 1 if ref_coordinates[0][0] is None else ref_coordinates[0][0] + 1
+    excel_row_num_end = cls.shape_body[1][0] + 1 if ref_coordinates[1][0] is None else ref_coordinates[1][0] + 1
+    return f"{excel_col_letter_start}{excel_row_num_start}:{excel_col_letter_end}{excel_row_num_end}"
+
+
 class Sheet:
     """Base Excel Sheet Class which contains all the methods that can be applied to a sheet"""
 
@@ -145,7 +155,36 @@ class Sheet:
         if isinstance(ref, str):
             ref = [ref]
         for i_ref in ref:
+            if self.__class__.__name__ == 'DataframeSheet':
+                i_ref = dataframesheet_col_ref_translator(self, i_ref)
             self.ws.merge_cells(i_ref)
+
+
+    def __group_cols_rows(self, ref, axis, hidden=False, outline_level=1):
+        """Group several rows or cols"""
+        if isinstance(ref, str):
+            ref = [ref]
+            if isinstance(hidden, bool):
+                hidden = [hidden] * len(ref)
+            if isinstance(hidden, int):
+                outline_level = [outline_level] * len(ref)
+        for i_ref, i_hidden, i_level in zip(ref, hidden, outline_level):
+            #if self.__class__.__name__ == 'DataframeSheet':
+            #    i_ref = dataframesheet_col_ref_translator(self, i_ref)
+            i_ref_start, i_ref_end = i_ref.split(':')
+            if axis == 'columns':
+                self.ws.column_dimensions.group(i_ref_start, i_ref_end, hidden=i_hidden, outline_level=i_level)
+            elif axis == 'rows':
+                self.ws.row_dimensions.group(i_ref_start, i_ref_end, hidden=i_hidden, outline_level=i_level)
+
+
+    def group_columns(self, *args, **kwargs):
+        """Group several columns"""
+        return self.__group_cols_rows(*args, **kwargs, axis='columns')
+
+    def group_rows(self, *args, **kwargs):
+        """Group several rows"""
+        return self.__group_cols_rows(*args, **kwargs, axis='rows')
 
 
 class DataframeSheet(Sheet):
@@ -602,6 +641,6 @@ if __name__ == "__main__":
             col_widths={"employees": 100},
         )
         #ws1.add_data_validation(ref="revenue", type="list", props=["Y", "N"])
-        #ws1.merge_cells("A1:B2")
+        ws1.group_columns("A:B")
 
     # example_df.to_excel('test.xlsx', sheet_name='My Sheet', startrow=0, startcol=0, index=True)
