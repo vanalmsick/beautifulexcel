@@ -6,7 +6,20 @@ All notable changes to this project will be documented in this file.
 
 - None
 
-## [0.2.8] - 2024-09-14
+## [0.3.0] - 2024-09-15
+
+### Added
+
+- Added data validation .add_data_validation()
+- Added .merge_cells()
+- Added .group_columns() and .group_rows()
+- Added documentation for beautifulexcel.ExcelWriter()
+
+### Fixed
+
+- Refactored cell reference translation
+
+## [0.2.8-0.2.9] - 2024-09-14
 
 ### Fixed
 
@@ -58,13 +71,10 @@ All notable changes to this project will be documented in this file.
 ## Still ToDo
 
 - Add manual cell writer
-- Add cell merger
-- Add column grouper/folder
 - Add easy option to add formulas
 - Add named styles styling
 - Add conditional formatting
 - Implement df.styler.to_excel()
-- Add data validation
 - Add table definition
 - Add data filtering
 - Add more doc strings
