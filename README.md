@@ -4,6 +4,8 @@
 > This is only the first version - actively working on additional features!
 
 BeautifulExcel is a python package that makes it easy and quick to save pandas dataframes in beautifully formatted excel files. BeautifulExcel is the Openpyxl for Data Scientists with a deadline.
+
+<img src="https://github.com/vanalmsick/beautifulexcel/raw/main/docs/docs/imgs/social.png" alt="Social Banner" style="width:100%;"/>
   
 <br>
   
