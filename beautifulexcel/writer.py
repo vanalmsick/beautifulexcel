@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import warnings
-from typing import Literal, Any
+from typing import Literal, Any, Union, List, Tuple
 import datetime
 import numpy as np
 import pandas as pd
@@ -104,22 +104,30 @@ class Sheet:
                 col = openpyxl.utils.get_column_letter(col + 1)
             self.ws.column_dimensions[col].width = width
 
-    def add_data_validation(self, ref, type, props=None, **kwargs):
+    def add_data_validation(
+            self,
+            ref: Union[str, List[str]],
+            type: Literal["list", "whole", "decimal", "date", "time", "textLength", "formula"],
+            props: Union[str, List[str], int, float, Tuple[int, float]] = None,
+            operator: Literal["between", "greaterThan", "greaterThanOrEqual", "equal", "notEqual", "lessThan", "lessThanOrEqual"] = None,
+            **kwargs
+        ):
         """
         Add data validation to worksheet
 
         Args:
             ref (str or list of str): Cell range reference e.g. "A1:C5" or ["A1:C5", "A21:Z55"]
             type (str): Data valiation type. Options: list, whole, decimal, date, time, textLength, formula
-            operator (str optional): Validation mathematical operator: "between", "greaterThan", "greaterThanOrEqual", "equal", "notEqual", "lessThan", "lessThanOrEqual"
-            props (any optional): Depending on vaildation type the properties. list = ["Option 1", "Option 2"], numeric = single number OR upper & lower boundary (1, 100), formla
+            operator (str): Validation mathematical operator: "between", "greaterThan", "greaterThanOrEqual", "equal", "notEqual", "lessThan", "lessThanOrEqual"
+            props (any): Depending on vaildation type the properties: list = ["Option 1", "Option 2"], numeric = single number OR upper & lower boundary (1, 100), formla
+            kwargs (dict): Any futher kwarg specified in [openpyxl.readthedocs.io/en/stable/api/openpyxl.worksheet.datavalidation.html](https://openpyxl.readthedocs.io/en/stable/api/openpyxl.worksheet.datavalidation.html#openpyxl.worksheet.datavalidation.DataValidation)
 
-        Example:
-            >>> ws1.add_data_validation(ref="A1:C5", type="whole")
-            >>> ws1.add_data_validation(ref="A1:C5", type="decimal", operator="greaterThan", props=0)
-            >>> ws1.add_data_validation(ref="A1:C5", type="textLength", props=10)
-            >>> ws1.add_data_validation(ref="A1:C5", type="list", props=["Yes", "No"])
-            >>> ws1.add_data_validation(ref="A1:C5", type="whole", operator="between", props=[0, 100])
+        Examples:
+            - ```sheet1.add_data_validation(ref="A1:C5", type="whole")```
+            - ```sheet1.add_data_validation(ref="A1:C5", type="decimal", operator="greaterThan", props=0)```
+            - ```sheet1.add_data_validation(ref="A1:C5", type="textLength", props=10)```
+            - ```sheet1.add_data_validation(ref="A1:C5", type="list", props=["Yes", "No"])```
+            - ```sheet1.add_data_validation(ref="A1:C5", type="whole", operator="between", props=[0, 100])```
         """
         if isinstance(props, list) or isinstance(props, tuple):
             if type.lower() == 'list':
@@ -130,7 +138,7 @@ class Sheet:
         else:
             formula1 = props
             formula2 = None
-        dv = openpyxl.worksheet.datavalidation.DataValidation(type=type, formula1=formula1, formula2=formula2, **kwargs)
+        dv = openpyxl.worksheet.datavalidation.DataValidation(type=type, formula1=formula1, formula2=formula2, operator=operator, **kwargs)
         self.ws.add_data_validation(dv)
 
         if isinstance(ref, str):
@@ -142,8 +150,16 @@ class Sheet:
                 dv.add(i_ref)
 
 
-    def merge_cells(self, ref):
-        """Merge several cells"""
+    def merge_cells(self, ref: str):
+        """
+        Merge several cells
+
+        Args:
+            ref (str): Cell range reference e.g. 'A1:C5'
+
+        Example:
+            ```sheet1.merge_cells(ref='A1:C5')```
+        """
         if isinstance(ref, str):
             ref = [ref]
         for i_ref in ref:
@@ -172,13 +188,29 @@ class Sheet:
                     self.ws.row_dimensions.group(i_ref_start, i_ref_end, hidden=i_hidden, outline_level=i_level)
 
 
-    def group_columns(self, *args, **kwargs):
-        """Group several columns"""
-        return self.__group_cols_rows(*args, **kwargs, axis='columns')
+    def group_columns(self, ref: str):
+        """
+        Group several columns
 
-    def group_rows(self, *args, **kwargs):
-        """Group several rows"""
-        return self.__group_cols_rows(*args, **kwargs, axis='rows')
+        Args:
+            ref (str): Excel column reference e.g. 'A:C'
+
+        Example:
+            ```sheet1.group_columns(ref='1:2')```
+        """
+        return self.__group_cols_rows(ref=ref, axis='columns')
+
+    def group_rows(self, ref):
+        """
+        Group several rows
+
+        Args:
+            ref (str): Excel row reference e.g. '1:3'
+
+        Example:
+            ```sheet1.group_rows(ref='1:5')```
+        """
+        return self.__group_cols_rows(ref=ref, axis='rows')
 
     def util_get_cell_coordinates(self, ref):
         """
@@ -294,7 +326,11 @@ class Sheet:
 
 
 class DataframeSheet(Sheet):
-    """DataFrame Excel Sheet class containing all logic specific to dataframe exports"""
+    """
+    DataFrame Excel Sheet class containing all logic specific to dataframe exports
+
+    Note: All methods/function of the class Sheet also work for this class DataframeSheet
+    """
 
     def __init__(
         self,
@@ -494,28 +530,35 @@ class DataframeSheet(Sheet):
                 self.apply_cell_style(row_num=row_num, col_num=col_num, style={**style_special_body, **cell_style})
 
 
-    def add_data_validation(self, ref, **kwargs):
+    def add_data_validation(self,
+            ref: Union[str, List[str]],
+            type: Literal["list", "whole", "decimal", "date", "time", "textLength", "formula"],
+            props: Union[str, List[str], int, float, Tuple[int, float]] = None,
+            operator: Literal["between", "greaterThan", "greaterThanOrEqual", "equal", "notEqual", "lessThan", "lessThanOrEqual"] = None,
+            **kwargs
+        ):
         """
         Add data validation to worksheet
 
         Args:
-            ref (str or list of str): Cell range reference e.g. "A1:C5" or ["A1:C5", "A21:Z55"]
+            ref (str or list of str): Cell range reference e.g. "A1:C5" or "employees" or ["A1:C5", "A21:Z55", "employees:RoE"]
             type (str): Data valiation type. Options: list, whole, decimal, date, time, textLength, formula
-            operator (str optional): Validation mathematical operator: "between", "greaterThan", "greaterThanOrEqual", "equal", "notEqual", "lessThan", "lessThanOrEqual"
-            props (any optional): Depending on vaildation type the properties. list = ["Option 1", "Option 2"], numeric = single number OR upper & lower boundary (1, 100), formla
+            operator (str): Validation mathematical operator: "between", "greaterThan", "greaterThanOrEqual", "equal", "notEqual", "lessThan", "lessThanOrEqual"
+            props (any): Depending on vaildation type the properties: list = ["Option 1", "Option 2"], numeric = single number OR upper & lower boundary (1, 100), formla
+            kwargs (dict): Any futher kwarg specified in [openpyxl.readthedocs.io/en/stable/api/openpyxl.worksheet.datavalidation.html](https://openpyxl.readthedocs.io/en/stable/api/openpyxl.worksheet.datavalidation.html#openpyxl.worksheet.datavalidation.DataValidation)
 
-        Example:
-            >>> ws1.add_data_validation(ref="employees", type="whole")
-            >>> ws1.add_data_validation(ref="A1:C5", type="whole")
-            >>> ws1.add_data_validation(ref="RoE", type="decimal", operator="greaterThan", props=0)
-            >>> ws1.add_data_validation(ref="A1:C5", type="textLength", props=10)
-            >>> ws1.add_data_validation(ref="A1:C5", type="list", props=["Yes", "No"])
-            >>> ws1.add_data_validation(ref="A1:C5", type="whole", operator="between", props=[0, 100])
+        Examples:
+            - ```sheet1.add_data_validation(ref="employees", type="whole")```
+            - ```sheet1.add_data_validation(ref="A1:C5", type="whole")```
+            - ```sheet1.add_data_validation(ref="RoE", type="decimal", operator="greaterThan", props=0)```
+            - ```sheet1.add_data_validation(ref="A1:C5", type="textLength", props=10)```
+            - ```sheet1.add_data_validation(ref="A1:C5", type="list", props=["Yes", "No"])```
+            - ```sheet1.add_data_validation(ref="A1:C5", type="whole", operator="between", props=[0, 100])```
         """
         if isinstance(ref, str):
             ref = [ref]
         ref = [self.util_range_ref_from_coordinates(self.util_get_range_coordinates(i, enrich_dimensions=True)) if i in self.header else i for i in ref]
-        super().add_data_validation(ref, **kwargs)
+        super().add_data_validation(ref=ref, type=type, props=props, operator=operator, **kwargs)
 
 
     def util_get_cell_coordinates(self, ref):
@@ -548,10 +591,13 @@ class ExcelWriter:
     Example:
         Output pandas dataframe quickly with beautiful formatting.
 
-        >>> from beautifulexcel import ExcelWriter
-        >>> with ExcelWriter('workbook.xlsx', mode='r', style='elegant_blue') as writer:
-        >>>     ws1 = writer.to_excel(df1, sheetname='My Sheet', mode='a', startrow=0, startcol=0)
-        >>>     ws1 = writer.to_excel(df2, sheetname='My Sheet', mode='a', startrow=20, startcol=0)
+        ```python
+        from beautifulexcel import ExcelWriter
+
+        with ExcelWriter('workbook.xlsx', mode='r', style='elegant_blue') as writer:
+            ws1 = writer.to_excel(df1, sheetname='My Sheet', mode='a', startrow=0, startcol=0)
+            ws2 = writer.to_excel(df2, sheetname='My Sheet', mode='a', startrow=20, startcol=0)
+        ```
     """
 
     def __init__(
@@ -567,7 +613,6 @@ class ExcelWriter:
         **kwargs,
     ):
         """
-
         Args:
             file (str): Path to xls or xlsx or ods file
             mode (str): If the file already exists you can either "replace" or "modify" it
@@ -576,6 +621,14 @@ class ExcelWriter:
             date_format (str): Format string for dates written into Excel files (e. g. 'YYYY-MM-DD')
             datetime_format (str): Format string for datetime objects written into Excel files. (e. g. 'YYYY-MM-DD HH:MM:SS')
             engine_kwargs (str): keywords passed though to openpyxl in "replace"-mode: openpyxl.Workbook(**engine_kwargs); "modify"-mode: openpyxl.load_workbook(file, **engine_kwargs)
+
+        Example:
+            ```python
+            from beautifulexcel import ExcelWriter
+
+            with ExcelWriter('workbook.xlsx', mode='r', style='elegant_blue') as writer:
+                ...
+            ```
         """
         self.file = file
         self.mode = mode
@@ -663,18 +716,45 @@ class ExcelWriter:
 
     def to_excel(
         self,
-        df,
-        sheet_name,
-        startrow=0,
-        startcol=0,
-        index=False,
-        header=True,
-        style={},
-        use_base_style=True,
-        col_widths={},
-        col_autofit=True,
-        auto_number_formatting=True,
-    ):
+        df: pd.DataFrame,
+        sheet_name: str,
+        startrow: int = 0,
+        startcol: int = 0,
+        index: bool = False,
+        header: bool = True,
+        style: dict = {},
+        use_base_style: bool = True,
+        col_widths: dict = {},
+        col_autofit: bool = True,
+        auto_number_formatting: bool = True,
+    ) -> DataframeSheet:
+        """
+        Export pandas Datafame to excel.
+
+        Args:
+            df (pd.DataFrame): Pandas Dataframe to export
+            sheet_name (str): Sheet name
+            startrow (int): Upper left cell row to dump dataframe (zero indexed)
+            startcol (int): Upper left cell column to dump data rame (zero indexed)
+            index (bool): Write row names/index as first column/s
+            header (bool): Write column names/header as first row/s
+            style (dict): Style dictionary with key referencing the cell/column/row and value the style to apply e.g. {'RoE': 'bg_light_blue', 'D:E': {'fill': 'FFEEB7'}}
+            use_base_style (bool): Apply the excel workbook "theme" set in ExcelWriter()
+            col_widths (dict): Define column widths manually with key referencing the column and value the width e.g. {'A:C': 20, 'F': 10, 'employees': 40}
+            col_autofit (bool): Automatically change column width to fit content best
+            auto_number_formatting (bool): Automatically detect number format and change excel format
+
+        Returns:
+            beautifulexcel.DataframeSheet
+
+        Example:
+            ```python
+            from beautifulexcel import ExcelWriter
+
+            with ExcelWriter('workbook.xlsx', mode='r', style='elegant_blue') as writer:
+                ws1 = writer.to_excel(df1, sheetname='My Sheet', mode='a', startrow=0, startcol=0)
+            ```
+        """
         df_sheet = DataframeSheet(
             excelwriter=self,
             df=df,
