@@ -63,7 +63,7 @@ markdown_extensions:
 
 plugins:
   - search
-#  - offline
+  - offline
   - mkdocstrings
 #  - optimize
 #  - render_swagger:
