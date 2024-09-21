@@ -3,6 +3,7 @@ name: Dev Publish Python 🐍 distribution 📦 to TestPyPI
 on:
   push:
     branches: [ 'dev' ]
+    paths-ignore: [ 'docs/**' ]
 
 jobs:
   build:
