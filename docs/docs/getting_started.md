@@ -19,10 +19,10 @@ from beautifulexcel import ExcelWriter
 
 with ExcelWriter('workbook.xlsx', mode='r', theme='elegant_blue') as writer:
     ws1 = writer.to_excel(
-        df, 
-        sheet_name='My Sheet', 
-        startrow=0, 
-        startcol=0, 
+        df,
+        sheet_name='My Sheet',
+        startrow=0,
+        startcol=0,
         index=True,
         header=True,
         col_autofit=True,  # automatically change column width to fit content best
