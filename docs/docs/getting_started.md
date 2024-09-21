@@ -18,51 +18,58 @@ $ pip install beautifulexcel --upgrade
 from beautifulexcel import ExcelWriter
 
 with ExcelWriter('workbook.xlsx', mode='r', theme='elegant_blue') as writer:
-    ws1 = writer.to_excel(df, sheet_name='My Sheet', startrow=0, startcol=0, index=True,
-                          style={'RoE': 'bg_light_blue', 'D:E': {'fill': 'FFEEB7'}})
+    ws1 = writer.to_excel(
+        df, 
+        sheet_name='My Sheet', 
+        startrow=0, 
+        startcol=0, 
+        index=True,
+        header=True,
+        col_autofit=True,  # automatically change column width to fit content best
+        col_widths={'A': 20, 'RoE': 40},  # define column width manually
+        auto_number_formatting=True,  # automatically detect number format and change excel format
+        style={'RoE': 'bg_light_blue', 'D:E': {'fill': 'FFEEB7'}},  # apply custom styling to this dataframe export
+        use_theme_style=True,  # apply the excel workbook "theme" set in ExcelWriter()
+    )
 ```
-  
+
 <br>
-  
-## Custom Styling:
 
-### Set "theme" for entire excel file
+## Find out more about:
+<div class="grid cards" markdown>
 
-In `ExcelWriter(..., theme='elegant_blue')` you can define the base theme that will be applied to your entire Excel file.  
-You can pass either:
+-   :material-file-excel-outline:{ .lg .middle } __beautifulexcel.ExcelWriter('workbook.xlsx')__
 
-- a ***theme name*** like 'elegant_blue',
-- or your personal ***.yml-theme-file path*** _([syntax example here](https://github.com/vanalmsick/beautifulexcel/blob/main/beautifulexcel/themes/elegant_blue.yml))_
+    ---
 
-### Add "style"-ing to individual dataframe exports
+    Find out more about aguments for beautifulexcel.ExcelWriter(...)
 
-In `writer.to_excel(df, ..., style={})` you can define specific styling kwargs for that specific table.  
-The **style dictionary** syntax is:
+    [:octicons-arrow-right-24: beautifulexcel.ExcelWriter()](./ExcelWriter/#beautifulexcel.ExcelWriter.__init__)
 
-| dictionary key:<br>reference the column, row, or cell                                                                                                                                                                                                                                                                                                                                                       | dictionary value:<br>provide formatting specs                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Options:<br><ul><li>***df column name***<br><ul><li>single coumn 'emplyees' or</li><li>range 'inception:last_contact'</li></ul></li><li>***df row number***<br><ul><li>single row '1' or</li><li>range '1:5'</li></ul></li><li>***excel column***<ul><li>single cell 'A1' or</li><li>range 'A1:C3'</li></ul></li><li>***excel column***<ul><li>single column 'A' or</li><li>range 'A:C'</li></ul></li></ul> | Options:<br><ul><li>***preset name*** from the selected "theme" *([see presets of 'elegant_blue'](https://github.com/vanalmsick/beautifulexcel/blob/main/beautifulexcel/themes/elegant_blue.yml))*<ul><li>single preset 'bg_light_blue' or</li><li>list of presets ['bg_light_blue', 'num_fmt_pct']</li></li></ul></li><li>***custom stying kwargs*** as dictionary as per [*openpyxl's class names*](https://openpyxl.readthedocs.io/en/stable/styles.html); examples:<ul><li>_font\_\_name: 'Arial'_</li><li>_font\_\_size: 10_</li><li>_font\_\_bold: True_</li><li>fill: 'FFEEB7'</li><li>_alignment\_\_horizontal: 'center'_</li><li>_alignment\_\_vertical: 'center'_</li><li>_numberformat: '#,##0'_</li><li>...</li></ul></li></ul> |
+-   :material-table:{ .lg .middle } __writer.to_excel(df, sheet_name='My Sheet')__
 
+    ---
 
-**Examples:** _(showcasing the many different styling options)_
+    Find out more about aguments for writer.to_excel(...)
 
-```python
-style = {'emplyees': ['bg_light_blue', 'num_fmt_pct'], 'F:G': 'num_fmt_pct'}
-```
+    [:octicons-arrow-right-24: writer.to_excel()](./ExcelWriter/#beautifulexcel.ExcelWriter.to_excel)
 
-```python
-style = {'C3:D10': {'font__size': 20, 'numberformat': '#,##0', 'font__italic'=True}, 'employees:customers': {'numberformat': '#,##0'}}
-```
+-   :material-format-font:{ .lg .middle } __Styling & Themes__
 
-```python
-MY_CUSTOM_WARNING_STYLE = {'font__bold': True, 'text__color': 'ff0000', 'font__size': 20}
-MY_CUSTOM_DATE_STYLE = {'numberformat': 'yyyy-mm-dd'}
+    ---
 
-style = {
-  '1': MY_CUSTOM_WARNING_STYLE, 
-  '2:5': {'font__size': 20},
-  'B3:G10': ['bg_light_blue', 'num_fmt_pct'], 
-  'A1': {**MY_CUSTOM_WARNING_STYLE, **MY_CUSTOM_DATE_STYLE}
-}
-```
-<br><br>
+    Change the colors, fonts, sizes, borders and more with a few lines
+
+    [:octicons-arrow-right-24: Customization](./styling/)
+
+-   :material-code-braces:{ .lg .middle } __Additional functions for sheets__
+
+    ---
+
+    Learn more about further functions to e.g. merge cells, group columns/rows and more
+
+    [:octicons-arrow-right-24: sheet1.function_a()](./Sheet/)
+
+</div>
+
+<br>

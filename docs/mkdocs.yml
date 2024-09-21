@@ -6,11 +6,14 @@ site_description: BeautifulExcel is a python package that makes it easy and quic
 site_url: https://vanalmsi.github.io/beautifulexcel/
 theme:
   name: material
+  favicon:
+  icon:
+    logo: material/microsoft-excel
   palette:
     # Light mode
     - media: "(prefers-color-scheme: light)"
-      scheme: mealie
-      primary: white
+      scheme: default
+      primary: blue
       accent: light blue
       toggle:
         icon: material/weather-night
@@ -18,7 +21,7 @@ theme:
     # Dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
-      primary: black
+      primary: blue
       accent: light blue
       toggle:
         icon: material/weather-sunny
@@ -34,7 +37,9 @@ theme:
 nav:
   - Home: "index.md"
   - Getting Started: "getting_started.md"
+  - Themes & Styling: "styling.md"
   - beautifulexcel.ExcelWriter(): "ExcelWriter.md"
+  - Sheet() & DataframeSheet(): "Sheet.md"
   - Changelog & ToDos: "change_log.md"
   - Suggest an idea: "https://github.com/vanalmsick/beautifulexcel/discussions/categories/ideas"
 
@@ -43,10 +48,24 @@ markdown_extensions:
   - def_list
   - admonition
   - attr_list
+  - md_in_html
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
 
 plugins:
   - search
-  - offline
+#  - offline
+  - mkdocstrings
+#  - optimize
 #  - render_swagger:
 #      allow_arbitrary_locations: true
 
