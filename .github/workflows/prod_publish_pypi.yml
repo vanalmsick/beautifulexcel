@@ -6,7 +6,7 @@ on:
       - closed
     branches:
       - main
-    paths-ignore: [ '.github/**', 'docs/**' ]
+    paths-ignore: [ '.github/**', 'docs/**', 'README.md' ]
 
 jobs:
 
