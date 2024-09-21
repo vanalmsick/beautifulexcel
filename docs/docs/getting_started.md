@@ -44,7 +44,7 @@ with ExcelWriter('workbook.xlsx', mode='r', theme='elegant_blue') as writer:
 
     Find out more about aguments for beautifulexcel.ExcelWriter(...)
 
-    [:octicons-arrow-right-24: beautifulexcel.ExcelWriter()](./ExcelWriter/#beautifulexcel.ExcelWriter.__init__)
+    [:octicons-arrow-right-24: beautifulexcel.ExcelWriter()](./ExcelWriter.html#beautifulexcel.ExcelWriter.__init__)
 
 -   :material-table:{ .lg .middle } __writer.to_excel(df, sheet_name='My Sheet')__
 
@@ -52,7 +52,7 @@ with ExcelWriter('workbook.xlsx', mode='r', theme='elegant_blue') as writer:
 
     Find out more about aguments for writer.to_excel(...)
 
-    [:octicons-arrow-right-24: writer.to_excel()](./ExcelWriter/#beautifulexcel.ExcelWriter.to_excel)
+    [:octicons-arrow-right-24: writer.to_excel()](./ExcelWriter.html#beautifulexcel.ExcelWriter.to_excel)
 
 -   :material-format-font:{ .lg .middle } __Styling & Themes__
 
@@ -60,7 +60,7 @@ with ExcelWriter('workbook.xlsx', mode='r', theme='elegant_blue') as writer:
 
     Change the colors, fonts, sizes, borders and more with a few lines
 
-    [:octicons-arrow-right-24: Customization](./styling/)
+    [:octicons-arrow-right-24: Customization](./styling.html)
 
 -   :material-code-braces:{ .lg .middle } __Additional functions for sheets__
 
@@ -68,7 +68,7 @@ with ExcelWriter('workbook.xlsx', mode='r', theme='elegant_blue') as writer:
 
     Learn more about further functions to e.g. merge cells, group columns/rows and more
 
-    [:octicons-arrow-right-24: sheet1.function_a()](./Sheet/)
+    [:octicons-arrow-right-24: sheet1.function_a()](./Sheet.html)
 
 </div>
 
