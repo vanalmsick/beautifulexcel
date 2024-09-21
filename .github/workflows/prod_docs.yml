@@ -16,6 +16,9 @@ jobs:
       - name: Checkout main
         uses: actions/checkout@v3
 
+      - name: Wait 2 min to make sure pypi package was updated
+          run: sleep 120
+
       - name: Deploy docs
         uses: mhausenblas/mkdocs-deploy-gh-pages@master
         env:

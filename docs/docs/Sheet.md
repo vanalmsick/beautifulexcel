@@ -1,4 +1,5 @@
-## class ***beautifulexcel.*Sheet()**
+# class **Sheet()** & **DataframeSheet()**
+## class **Sheet()**
 ::: beautifulexcel.writer.Sheet
     options:
       members:
@@ -11,10 +12,12 @@
       heading_level: 3
   
 
-## class ***beautifulexcel.*DataframeSheet()**
+## class **DataframeSheet()**
 
 ::: beautifulexcel.writer.DataframeSheet
     options:
+      members:
+        - add_data_validation
       show_root_heading: false
       show_source: false
       heading_level: 3
