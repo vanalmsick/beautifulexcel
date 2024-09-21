@@ -6,6 +6,12 @@ All notable changes to this project will be documented in this file.
 
 - None
 
+## [0.3.1]
+
+### Added
+
+- Improved documentation
+
 ## [0.3.0] - 2024-09-15
 
 ### Added
