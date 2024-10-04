@@ -6,6 +6,18 @@ All notable changes to this project will be documented in this file.
 
 - None
 
+## [0.3.4] - 2024-10-04
+
+### Added
+
+- ws.write_cell() and ws.write_cells()
+
+## [0.3.3] - 2024-10-04
+
+### Fixed
+
+- Fixed py-3.7 compability
+
 ## [0.3.1-0.3.2] - 2024-09-21
 
 ### Added
@@ -76,7 +88,6 @@ All notable changes to this project will be documented in this file.
 
 ## Still ToDo
 
-- Add manual cell writer
 - Add easy option to add formulas
 - Add named styles styling
 - Add conditional formatting

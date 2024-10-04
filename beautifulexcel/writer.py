@@ -325,6 +325,14 @@ class Sheet:
         return f'{start_ref}:{end_ref}'
 
 
+    def write_cell(self, ref: str, content):
+        self.ws[ref] = content
+
+    def write_cells(self, cell_dict: dict):
+        for ref, content in cell_dict.items():
+            self.write_cell(ref=ref, content=content)
+
+
 class DataframeSheet(Sheet):
     """
     DataFrame Excel Sheet class containing all logic specific to dataframe exports
@@ -839,5 +847,6 @@ if __name__ == "__main__":
         ws1.add_data_validation(ref="employees", type="list", props=["Y", "N"])
         ws1.group_columns("revenue:B")
         ws1.merge_cells("B8:C9")
+        ws1.write_cells({'A1':'Hello'})
 
     # example_df.to_excel('test.xlsx', sheet_name='My Sheet', startrow=0, startcol=0, index=True)
