@@ -27,7 +27,8 @@ setup(
         "Operating System :: OS Independent",
     ],
     python_requires=">=3.7",
-    packages=find_packages(),
+    #packages=find_packages(),
+    install_requires=['typing', 'PyYAML', 'datetime', 'openpyxl', 'numpy', 'pandas'],
     package_data={"beautifulexcel": ["themes/*.yml", "VERSION"]},
     include_package_data=True,
 )
