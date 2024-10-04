@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://vanalmsi.github.io/beautifulexcel/index.html</loc>
+         <lastmod>2024-10-04</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://vanalmsi.github.io/beautifulexcel/ExcelWriter.html</loc>
+         <lastmod>2024-10-04</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://vanalmsi.github.io/beautifulexcel/Sheet.html</loc>
+         <lastmod>2024-10-04</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://vanalmsi.github.io/beautifulexcel/change_log.html</loc>
+         <lastmod>2024-10-04</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://vanalmsi.github.io/beautifulexcel/getting_started.html</loc>
+         <lastmod>2024-10-04</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://vanalmsi.github.io/beautifulexcel/styling.html</loc>
+         <lastmod>2024-10-04</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+</urlset>
