@@ -15,7 +15,7 @@ def flatten_dict(dict_obj: dict, sep="__"):
     """Flatten a multi-level dictionary e.g. {'a1': {'b': 1}, 'a2': 3} -> {'a1__b': 1, 'a2': 3}"""
     df = pd.json_normalize(dict_obj, sep=sep)
     d_flat = df.to_dict(orient="records")[0]
-    return d_flat
+    return {k[2:] if len(k) > 2 and k[:2] == '__' else k: v for k, v in d_flat.items()}
 
 
 def deepen_dict(dict_obj, sep="__"):

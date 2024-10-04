@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import warnings
-from typing import Literal, Any, Union, List, Tuple
+from typing import Any, Union, List, Tuple #, Literal
 import datetime
 import numpy as np
 import pandas as pd
@@ -107,9 +107,9 @@ class Sheet:
     def add_data_validation(
             self,
             ref: Union[str, List[str]],
-            type: Literal["list", "whole", "decimal", "date", "time", "textLength", "formula"],
+            type: str, #Literal["list", "whole", "decimal", "date", "time", "textLength", "formula"],
             props: Union[str, List[str], int, float, Tuple[int, float]] = None,
-            operator: Literal["between", "greaterThan", "greaterThanOrEqual", "equal", "notEqual", "lessThan", "lessThanOrEqual"] = None,
+            operator: str = None, #Literal["between", "greaterThan", "greaterThanOrEqual", "equal", "notEqual", "lessThan", "lessThanOrEqual"] = None,
             **kwargs
         ):
         """
@@ -532,9 +532,9 @@ class DataframeSheet(Sheet):
 
     def add_data_validation(self,
             ref: Union[str, List[str]],
-            type: Literal["list", "whole", "decimal", "date", "time", "textLength", "formula"],
+            type: str, #Literal["list", "whole", "decimal", "date", "time", "textLength", "formula"],
             props: Union[str, List[str], int, float, Tuple[int, float]] = None,
-            operator: Literal["between", "greaterThan", "greaterThanOrEqual", "equal", "notEqual", "lessThan", "lessThanOrEqual"] = None,
+            operator: str = None, #Literal["between", "greaterThan", "greaterThanOrEqual", "equal", "notEqual", "lessThan", "lessThanOrEqual"] = None,
             **kwargs
         ):
         """
@@ -603,13 +603,13 @@ class ExcelWriter:
     def __init__(
         self,
         file: str,
-        mode: Literal["replace", "modify"] = "replace",
-        if_sheet_exists: Literal["error", "new", "replace", "overlay"] = "replace",
+        mode: str = "replace", #Literal["replace", "modify"] = "replace",
+        if_sheet_exists: str = "replace", #Literal["error", "new", "replace", "overlay"] = "replace",
         theme: str = "elegant_blue",
         ref_warnings: bool = True,
         date_format: str = None,
         datetime_format: str = None,
-        engine_kwargs: dict[str, Any] = {},
+        engine_kwargs: Any = {},
         **kwargs,
     ):
         """
