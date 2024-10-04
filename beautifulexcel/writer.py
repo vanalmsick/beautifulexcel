@@ -706,7 +706,10 @@ class ExcelWriter:
         return self
 
     def save(self):
-        self.writer.save()
+        if callable(getattr(self.writer, "save", None)):
+            self.writer.save()
+        else:
+            self.writer._save()
 
     def __exit__(self, type, value, traceback):
         # ToDo: add exception handling here
