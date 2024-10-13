@@ -428,7 +428,8 @@ class DataframeSheet(Sheet):
             col_coordinates = self.util_get_range_coordinates(col_ref)
 
             if (
-                col_coordinates[0] is not None
+                col_coordinates is not None
+                and col_coordinates[0] is not None
                 and col_coordinates[0][1] is not None
                 and col_coordinates[1] is not None
                 and col_coordinates[1][1] is not None
@@ -448,21 +449,24 @@ class DataframeSheet(Sheet):
             ):
                 # check if no manual col width
                 if i not in _col_widths:
-                    # is datetime column
-                    if pd.api.types.is_datetime64_any_dtype(col):
-                        _col_widths[i] = int(10 * CHARACTER_FACTOR)
-                    # is string column
-                    elif pd.api.types.is_string_dtype(col):
-                        try:
-                            length = np.quantile(col.str.len().values, 0.8)
-                            _col_widths[i] = int(max(length, 4) * CHARACTER_FACTOR)
-                        except:
-                            # ignore error
-                            pass
-                    # is numeric column
-                    elif pd.api.types.is_numeric_dtype(col):
-                        length = len("{:,}".format(int(col.quantile(0.8))))
-                        _col_widths[i] = int(max(length, 6) * CHARACTER_FACTOR)
+                    try:
+                        # is datetime column
+                        if pd.api.types.is_datetime64_any_dtype(col):
+                            _col_widths[i] = int(10 * CHARACTER_FACTOR)
+                        # is string column
+                        elif pd.api.types.is_string_dtype(col):
+                            try:
+                                length = np.quantile(col.str.len().values, 0.8)
+                                _col_widths[i] = int(max(length, 4) * CHARACTER_FACTOR)
+                            except:
+                                # ignore error
+                                pass
+                        # is numeric column
+                        elif pd.api.types.is_numeric_dtype(col):
+                            length = len("{:,}".format(int(col.quantile(0.8))))
+                            _col_widths[i] = int(max(length, 6) * CHARACTER_FACTOR)
+                    except Exception as e:
+                        warning.warn(f'Were not able to automatically determin best column width for "{col}". You can set it manually col_widths=' + '{' + f'"{col}": 40' + '}')
 
         self.change_col_widths(_col_widths)
 
@@ -485,10 +489,11 @@ class DataframeSheet(Sheet):
                 style_coordinates = self.util_get_range_coordinates(ref)
 
                 # check if invalid cell ref
-                if ref_warnings and (style_coordinates[0] is None or style_coordinates[1] is None):
-                    warnings.warn(
-                        f'Styling ref "{ref}" could not be found. (You can turn off these warnings by adding ref_warnings=False to ExcelWriter())'
-                    )
+                if (style_coordinates is None or style_coordinates[0] is None or style_coordinates[1] is None):
+                    if ref_warnings:
+                        warnings.warn(
+                            f'Styling ref "{ref}" could not be found. (You can turn off these warnings by adding ref_warnings=False to ExcelWriter())'
+                        )
 
                 # all good - valid cell style range
                 else:
