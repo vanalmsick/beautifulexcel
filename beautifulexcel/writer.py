@@ -402,11 +402,14 @@ class DataframeSheet(Sheet):
                 high = col_series_mod.quantile(0.8)
 
                 # check if percentages
-                if high < 2:
+                if -2 < low and high < 2:
                     self.style_base[col_name] = self._extend_style_args("num_fmt_pct")
                 # check if small number
                 elif high < 1_000 and "int" not in str(col_series.dtype):
                     self.style_base[col_name] = self._extend_style_args("num_fmt_decimal")
+                # check if iso cob date
+                elif 1900_00_00 > low and high < 2100_00_00:
+                    pass
                 # check if large number in millions
                 elif low > 10_000_000:
                     self.style_base[col_name] = self._extend_style_args("num_fmt_mm")
@@ -466,7 +469,7 @@ class DataframeSheet(Sheet):
                             length = len("{:,}".format(int(col.quantile(0.8))))
                             _col_widths[i] = int(max(length, 6) * CHARACTER_FACTOR)
                     except Exception as e:
-                        warning.warn(f'Were not able to automatically determin best column width for "{col}". You can set it manually col_widths=' + '{' + f'"{col}": 40' + '}')
+                        warnings.warn(f'Were not able to automatically determin best column width for "{col}". You can set it manually col_widths=' + '{' + f'"{col}": 40' + '}')
 
         self.change_col_widths(_col_widths)
 
@@ -592,8 +595,12 @@ class DataframeSheet(Sheet):
         """
         ref = str(ref)
         if not ref.isdigit() or not (len(ref) >= 2 and ref[0] == '-' and ref[1:].isdigit()):
+            # for normal column name
             if ref in self.header:
                 ref = openpyxl.utils.cell.get_column_letter((self.header.get_loc(ref) + 1) + self.index_depth + self.startcol)
+            # for column name that is part of index
+            elif self.has_index and ref in list(self.index.names):
+                ref = openpyxl.utils.cell.get_column_letter(list(self.index.names).index(ref) + self.startcol + 1)
         return super().util_get_cell_coordinates(ref)
 
 
